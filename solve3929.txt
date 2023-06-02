@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+function generatecode()
+{
+var ControllerArray = new Array(0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40);
+//controller buttons u, d, l, r, C, A, B
+
+var Rand = Math.floor(Math.random()*7); //select a random button press from ControllerArray
+
+var RecordedPresses = new Array(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+//used to store sequence of 9 random button presses
+
+var Counter = 0x00;
+var FF1C = 0x0000;
+var CarryFlag = new Boolean();
+
+while (FF1C != 0x3929)
+{
+if (Counter > 0x08) //if 9 button presses made and no solution, start over
+{
+Counter = 0x00;
+FF1C = 0x0000;     
+}
+
+RecordedPresses[Counter] = ControllerArray[Rand];
+FF1C = FF1C ^ ControllerArray[Rand];
+Rand = Math.floor(Math.random()*7);
+                
+CarryFlag = (FF1C & 0x0001) == 0x0001;
+FF1C = FF1C >> 1;
+
+if (CarryFlag == true)
+{
+FF1C = FF1C ^ 0x8810;
+}
+
+Counter++;
+}
+
+var ButtonText = new Array();
+ButtonText[0x01] = "up";
+ButtonText[0x02] = "down";
+ButtonText[0x04] = "left";
+ButtonText[0x08] = "right";
+ButtonText[0x10] = "C";
+ButtonText[0x20] = "A";
+ButtonText[0x40] = "B";
+
+document.getElementById("RecordedPresses1").innerHTML=ButtonText[RecordedPresses[0x00]];
+document.getElementById("RecordedPresses2").innerHTML=ButtonText[RecordedPresses[0x01]];
+document.getElementById("RecordedPresses3").innerHTML=ButtonText[RecordedPresses[0x02]];
+document.getElementById("RecordedPresses4").innerHTML=ButtonText[RecordedPresses[0x03]];
+document.getElementById("RecordedPresses5").innerHTML=ButtonText[RecordedPresses[0x04]];
+document.getElementById("RecordedPresses6").innerHTML=ButtonText[RecordedPresses[0x05]];
+document.getElementById("RecordedPresses7").innerHTML=ButtonText[RecordedPresses[0x06]];
+document.getElementById("RecordedPresses8").innerHTML=ButtonText[RecordedPresses[0x07]];
+document.getElementById("RecordedPresses9").innerHTML=ButtonText[RecordedPresses[0x08]];
+}
+</script>
+</head>
+<body>
+
+<h1>Solve 0x3929</h1>
+
+<button type="button" onclick="generatecode()">Generate</button>
+
+<p>Click the button to begin.</p>
+
+<p id="RecordedPresses1"> </p>
+<p id="RecordedPresses2"> </p>
+<p id="RecordedPresses3"> </p>
+<p id="RecordedPresses4"> </p>
+<p id="RecordedPresses5"> </p>
+<p id="RecordedPresses6"> </p>
+<p id="RecordedPresses7"> </p>
+<p id="RecordedPresses8"> </p>
+<p id="RecordedPresses9"> </p>
+
+</body>
+</html>
